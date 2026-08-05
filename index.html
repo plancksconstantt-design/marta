@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<meta name="description" content="Портфолио архитектора: жилые и общественные здания, интерьеры, 3D-визуализация. Минск, Беларусь.">
+<title>Архитектор — Портфолио</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%23191712'/%3E%3Ctext x='32' y='44' font-size='34' text-anchor='middle' fill='%23EDE8DE' font-family='sans-serif'%3EА%3C/text%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<style>
+/* ============================================================
+   АРХИТЕКТОР · ПОРТФОЛИО — дизайн-система «чертёжный лист»
+   Палитра: бумага / тушь / терракота
+   ============================================================ */
+:root{
+  --paper:#EDE8DE;
+  --paper-2:#F6F3EA;
+  --ink:#191712;
+  --ink-soft:#544E40;
+  --accent:#D4491F;
+  --line:rgba(25,23,18,.16);
+  --line-strong:rgba(25,23,18,.9);
+  --line-paper:rgba(237,232,222,.22);
+  --disp:'Unbounded',sans-serif;
+  --body:'Golos Text',system-ui,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --pad-x:clamp(20px,4.5vw,60px);
+  --ease:cubic-bezier(.2,.6,.1,1);
+  --ease-hard:cubic-bezier(.77,0,.18,1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{
+  font-family:var(--body);
+  background:var(--paper);
+  color:var(--ink);
+  font-size:16px;line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+::selection{background:var(--accent);color:var(--paper)}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;background:none;border:none;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.mono{font-family:var(--mono)}
+
+/* зерно плёнки */
+.noise{position:fixed;inset:-50%;z-index:250;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 8s steps(10) infinite}
+@keyframes grain{0%,100%{transform:translate(0,0)}20%{transform:translate(-3%,2%)}40%{transform:translate(2%,-3%)}60%{transform:translate(-2%,-2%)}80%{transform:translate(3%,3%)}}
+
+/* прогресс-бар чтения */
+.progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--accent);z-index:260}
+
+/* ---------- кастомный курсор ---------- */
+.cursor-dot,.cursor-ring{position:fixed;top:0;left:0;pointer-events:none;z-index:400;border-radius:50%;transform:translate(-50%,-50%);display:none}
+.cursor-dot{width:8px;height:8px;background:var(--accent)}
+.cursor-ring{width:36px;height:36px;border:1px solid var(--accent);transition:width .3s var(--ease),height .3s var(--ease),background .3s}
+.cursor-ring.big{width:68px;height:68px;background:rgba(212,73,31,.1)}
+html.has-cursor .cursor-dot,html.has-cursor .cursor-ring{display:block}
+html.has-cursor,html.has-cursor a,html.has-cursor button{cursor:none}
+
+/* ---------- прелоадер ---------- */
+.loader{position:fixed;inset:0;z-index:300;background:var(--ink);color:var(--paper);
+  display:grid;place-items:center;transition:transform .9s var(--ease-hard) .15s}
+.loader--done{transform:translateY(-101%)}
+.loader__inner{text-align:center;padding:0 24px}
+.loader__name{font-size:11px;letter-spacing:.35em;text-transform:uppercase;opacity:.6;margin-bottom:22px}
+.loader__count{font-family:var(--disp);font-weight:500;font-size:clamp(3.4rem,10vw,6.5rem);line-height:1;color:var(--accent)}
+.loader__bar{width:min(320px,70vw);height:1px;background:var(--line-paper);margin:26px auto 0}
+.loader__bar span{display:block;height:100%;width:0;background:var(--paper)}
+
+/* ---------- шапка ---------- */
+.header{position:fixed;top:0;left:0;right:0;z-index:120;
+  display:flex;align-items:center;justify-content:space-between;gap:20px;
+  padding:16px var(--pad-x);border-bottom:1px solid transparent;
+  transition:background .4s,border-color .4s}
+.header.scrolled{background:var(--paper);border-color:var(--line)}
+.logo{display:flex;align-items:center;gap:12px}
+.logo__mark{width:36px;height:36px;background:var(--ink);color:var(--paper);display:grid;place-items:center;
+  font-family:var(--disp);font-size:15px;transition:background .3s,transform .3s}
+.logo:hover .logo__mark{background:var(--accent);transform:rotate(-6deg)}
+.logo__txt{font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;line-height:1.5}
+.nav{display:flex;gap:clamp(16px,2.5vw,34px)}
+.nav a{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;position:relative;padding:4px 0}
+.nav a i{font-style:normal;color:var(--accent);margin-right:6px}
+.nav a::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--accent);
+  transform:scaleX(0);transform-origin:right;transition:transform .35s var(--ease)}
+.nav a:hover::after,.nav a.active::after{transform:scaleX(1);transform-origin:left}
+.header__meta{font-family:var(--mono);font-size:11px;letter-spacing:.1em;display:flex;align-items:center;gap:8px}
+.header__meta .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* бургер */
+.burger{display:none;width:40px;height:40px;position:relative;z-index:140}
+.burger span{position:absolute;left:8px;right:8px;height:2px;background:var(--ink);transition:transform .4s var(--ease),top .4s var(--ease)}
+.burger span:nth-child(1){top:15px}.burger span:nth-child(2){top:23px}
+.burger.is-open span{background:var(--paper)}
+.burger.is-open span:nth-child(1){top:19px;transform:rotate(45deg)}
+.burger.is-open span:nth-child(2){top:19px;transform:rotate(-45deg)}
+
+/* ---------- полноэкранное меню ---------- */
+.menu{position:fixed;inset:0;z-index:130;background:var(--ink);color:var(--paper);
+  transform:translateY(-101%);transition:transform .75s var(--ease-hard);
+  display:flex;flex-direction:column;justify-content:center;padding:90px var(--pad-x) 40px}
+body.menu-open .menu{transform:none}
+body.menu-open{overflow:hidden}
+.menu a.m-link{display:flex;align-items:baseline;gap:20px;padding:14px 0;border-bottom:1px solid var(--line-paper);
+  font-family:var(--disp);font-weight:500;font-size:clamp(1.7rem,5.5vw,3.2rem);
+  opacity:0;transform:translateY(30px);transition:opacity .5s var(--ease),transform .5s var(--ease),color .3s}
+.menu a.m-link i{font-style:normal;font-family:var(--mono);font-size:12px;color:var(--accent)}
+.menu a.m-link:hover{color:var(--accent)}
+body.menu-open .m-link{opacity:1;transform:none}
+body.menu-open .m-link:nth-child(1){transition-delay:.25s}
+body.menu-open .m-link:nth-child(2){transition-delay:.31s}
+body.menu-open .m-link:nth-child(3){transition-delay:.37s}
+body.menu-open .m-link:nth-child(4){transition-delay:.43s}
+body.menu-open .m-link:nth-child(5){transition-delay:.49s}
+body.menu-open .m-link:nth-child(6){transition-delay:.55s}
+.menu__foot{margin-top:36px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11px;letter-spacing:.14em;opacity:.6;text-transform:uppercase}
+
+/* ---------- HERO: титульный лист ---------- */
+.hero{min-height:100svh;position:relative;display:flex;flex-direction:column;
+  padding:104px var(--pad-x) 32px;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:76px 76px}
+.hero .mark{position:absolute;font-family:var(--mono);color:var(--accent);font-size:16px;user-select:none}
+.hero .mark.tl{top:96px;left:14px}.hero .mark.tr{top:96px;right:14px}
+.hero .mark.bl{bottom:14px;left:14px}.hero .mark.br{bottom:14px;right:14px}
+
+.hero__top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px}
+.hero__kicker{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;padding-top:8px}
+.hero__kicker b{color:var(--accent);font-weight:500}
+
+/* штамп-угловой блок */
+.stamp{width:300px;border:1px solid var(--line-strong);font-family:var(--mono);font-size:10px;
+  letter-spacing:.08em;background:rgba(246,243,234,.6)}
+.stamp div{display:grid;grid-template-columns:92px 1fr;border-bottom:1px solid var(--line-strong)}
+.stamp div:last-child{border-bottom:none}
+.stamp span{padding:7px 10px;border-right:1px solid var(--line-strong);text-transform:uppercase;color:var(--ink-soft)}
+.stamp b{padding:7px 10px;font-weight:500}
+
+.hero__main{flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 0}
+.hero__author{font-family:var(--mono);font-size:clamp(11px,1.4vw,13px);letter-spacing:.3em;text-transform:uppercase;margin-bottom:18px}
+.hero__author em{font-style:normal;color:var(--accent)}
+.hero h1{font-family:var(--disp);font-weight:600;font-size:clamp(2.6rem,9vw,9.2rem);line-height:.98;
+  letter-spacing:-.01em;text-transform:uppercase}
+.hero__sub{max-width:56ch;margin-top:30px;font-size:clamp(1rem,1.6vw,1.15rem);color:var(--ink-soft)}
+.hero__sub strong{color:var(--ink);font-weight:600}
+
+.hero__bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:24px}
+.scroll-hint{display:flex;align-items:center;gap:14px;font-family:var(--mono);font-size:10px;letter-spacing:.3em;text-transform:uppercase}
+.scroll-hint .line{width:1px;height:52px;background:var(--ink);position:relative;overflow:hidden}
+.scroll-hint .line::after{content:'';position:absolute;left:0;top:-100%;width:100%;height:100%;background:var(--accent);animation:drip 2s var(--ease) infinite}
+@keyframes drip{to{top:100%}}
+
+.badge{width:118px;height:118px;animation:spin 16s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.badge text{font-family:var(--mono);font-size:9.5px;letter-spacing:1.5px;fill:var(--ink)}
+
+/* анимации появления hero */
+.js .h-reveal{opacity:0;transform:translateY(34px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:var(--d,0s)}
+body.loaded .h-reveal{opacity:1;transform:none}
+
+/* ---------- бегущая строка ---------- */
+.marquee{border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong);
+  overflow:hidden;background:var(--paper)}
+.marquee__track{display:flex;width:max-content;animation:marquee 26s linear infinite}
+.marquee:hover .marquee__track{animation-play-state:paused}
+.marquee__group{display:flex;align-items:center;padding:15px 0;white-space:nowrap}
+.marquee__group span{font-family:var(--disp);font-weight:500;font-size:13px;letter-spacing:.18em;text-transform:uppercase;padding:0 22px}
+.marquee__group i{color:var(--accent);font-style:normal;font-size:11px}
+@keyframes marquee{to{transform:translateX(-50%)}}
+
+/* ---------- каркас секций ---------- */
+.section{padding:clamp(84px,12vh,150px) var(--pad-x);position:relative}
+.section--pad-top{padding-top:clamp(60px,8vh,100px)}
+.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+  border-bottom:1px solid var(--line-strong);padding-bottom:18px;margin-bottom:clamp(40px,7vh,76px)}
+.section-label{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:12px}
+.section-title{font-family:var(--disp);font-weight:600;font-size:clamp(1.7rem,4.6vw,3.3rem);line-height:1.05;text-transform:uppercase}
+.sheet-no{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--ink-soft);text-transform:uppercase;white-space:nowrap;padding-bottom:6px}
+
+/* маски-появления */
+.mask{overflow:hidden}
+.mask>span{display:block;transform:translateY(120%);transition:transform 1s var(--ease);transition-delay:var(--d,0s)}
+.in .mask>span,.mask.in>span{transform:none}
+.js [data-reveal]{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:var(--d,0s)}
+.js [data-reveal].in{opacity:1;transform:none}
+
+/* ---------- 00 · СОДЕРЖАНИЕ ---------- */
+.toc{list-style:none;counter-reset:toc}
+.toc a{position:relative;display:grid;grid-template-columns:64px minmax(180px,1.2fr) 1fr auto 40px;
+  align-items:center;gap:18px;padding:clamp(18px,3vh,28px) 10px;border-top:1px solid var(--line);
+  transition:color .35s var(--ease)}
+.toc li:last-child a{border-bottom:1px solid var(--line)}
+.toc a::before{content:'';position:absolute;inset:0;background:var(--ink);transform:scaleY(0);
+  transform-origin:bottom;transition:transform .45s var(--ease-hard);z-index:0}
+.toc a:hover::before{transform:scaleY(1);transform-origin:top}
+.toc a:hover{color:var(--paper)}
+.toc a>*{position:relative;z-index:1}
+.toc__num{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.toc__name{font-family:var(--disp);font-weight:500;font-size:clamp(1.05rem,2.4vw,1.6rem);text-transform:uppercase}
+.toc__dots{border-bottom:1px dotted currentColor;opacity:.45;transform:translateY(4px)}
+.toc__note{font-family:var(--mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.6;text-align:right}
+.toc__arrow{font-size:20px;transition:transform .35s var(--ease)}
+.toc a:hover .toc__arrow{transform:translateX(8px);color:var(--accent)}
+
+/* ---------- 01 · ОБО МНЕ ---------- */
+.about{display:grid;grid-template-columns:minmax(300px,440px) 1fr;gap:clamp(44px,7vw,100px);align-items:start}
+.about-media{position:sticky;top:110px}
+.frame{position:relative;background:var(--paper-2);border:1px solid var(--line-strong);
+  padding:clamp(10px,1.4vw,16px);box-shadow:0 24px 60px rgba(25,23,18,.14);
+  transform:rotate(-1.6deg);transition:transform .6s var(--ease)}
+.frame:hover{transform:rotate(0deg) scale(1.012)}
+.frame::before,.frame::after{content:'';position:absolute;width:96px;height:26px;
+  background:rgba(212,73,31,.28);border:1px solid rgba(212,73,31,.35);z-index:2}
+.frame::before{top:-12px;left:-22px;transform:rotate(-38deg)}
+.frame::after{top:-12px;right:-22px;transform:rotate(38deg)}
+.frame__img{overflow:hidden;aspect-ratio:4/5}
+.frame img{width:100%;height:100%;object-fit:cover;animation:breathe 16s ease-in-out infinite alternate}
+@keyframes breathe{from{transform:scale(1.02)}to{transform:scale(1.1)}}
+.frame figcaption{font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase;
+  padding-top:14px;display:flex;justify-content:space-between;color:var(--ink-soft)}
+.about-body h2{font-family:var(--disp);font-weight:500;font-size:clamp(1.45rem,3.2vw,2.4rem);line-height:1.22;margin-bottom:28px}
+.about-body h2 em{font-style:normal;color:var(--accent)}
+.about-body p{max-width:62ch;color:var(--ink-soft);margin-bottom:18px}
+.about-body p strong{color:var(--ink)}
+.pull{border-left:3px solid var(--accent);padding:6px 0 6px 22px;margin:34px 0;
+  font-family:var(--disp);font-weight:400;font-size:clamp(1.05rem,2vw,1.35rem);line-height:1.5;max-width:34ch}
+.edu{border:1px solid var(--line-strong);margin-top:36px}
+.edu__head{font-family:var(--mono);font-size:10px;letter-spacing:.3em;text-transform:uppercase;
+  padding:12px 20px;border-bottom:1px solid var(--line-strong);background:var(--paper-2)}
+.edu__row{display:flex;gap:20px;flex-wrap:wrap;align-items:baseline;padding:20px}
+.edu__years{font-family:var(--mono);font-size:12px;color:var(--accent)}
+.edu__place{font-weight:600;font-size:1.1rem}
+.edu__spec{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--ink-soft);text-transform:uppercase}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px}
+.chip{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;
+  border:1px solid var(--line-strong);padding:8px 14px;transition:background .3s,color .3s,border-color .3s}
+.chip:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* ---------- 02 · ИНСТРУМЕНТЫ ---------- */
+.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,2.5vw,28px)}
+.skill{border:1px solid var(--line-strong);padding:clamp(22px,3vw,32px);background:var(--paper);
+  transition:transform .4s var(--ease),box-shadow .4s var(--ease)}
+.skill:hover{transform:translate(-5px,-5px);box-shadow:9px 9px 0 var(--ink)}
+.skill--wide{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
+.skill__top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:16px}
+.skill__idx{font-family:var(--mono);font-size:11px;color:var(--accent)}
+.skill__lvl{font-family:var(--mono);font-size:11px;color:var(--ink-soft)}
+.skill h3{font-family:var(--disp);font-weight:500;font-size:clamp(1.05rem,1.9vw,1.4rem);margin-bottom:10px}
+.skill p{font-size:.92rem;color:var(--ink-soft);margin-bottom:22px;max-width:46ch}
+.bar{height:3px;background:var(--line);position:relative}
+.bar span{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--accent);transition:width 1.4s var(--ease) .2s}
+.skill--wide p{margin:0}
+.live-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--accent);margin-right:10px;animation:pulse 1.6s infinite}
+
+/* ---------- 03 · ОПЫТ ---------- */
+.exp{display:grid;grid-template-columns:1fr 1.6fr;gap:clamp(40px,6vw,90px);align-items:start}
+.exp__company{position:sticky;top:120px}
+.exp__logo{font-family:var(--disp);font-weight:700;font-size:clamp(2.2rem,5vw,3.6rem);line-height:1;letter-spacing:.01em}
+.exp__logo i{font-style:normal;color:var(--accent)}
+.exp__role{margin-top:16px;font-weight:600;font-size:1.05rem}
+.exp__meta{margin-top:14px;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);display:grid;gap:6px}
+.exp__meta b{color:var(--accent);font-weight:500}
+.duties{list-style:none;counter-reset:du}
+.duties li{counter-increment:du;display:grid;grid-template-columns:56px 1fr;gap:18px;
+  padding:18px 6px;border-top:1px solid var(--line);transition:background .3s,padding-left .3s}
+.duties li:last-child{border-bottom:1px solid var(--line)}
+.duties li:hover{background:var(--paper-2);padding-left:14px}
+.duties li::before{content:counter(du,decimal-leading-zero);font-family:var(--mono);font-size:12px;color:var(--accent);padding-top:4px}
+.duties li p{color:var(--ink-soft);font-size:.97rem}
+.duties li:hover p{color:var(--ink)}
+
+/* ---------- 04 · ПРОЕКТЫ ---------- */
+.project{border-top:1px solid var(--line-strong);padding-top:clamp(34px,5vh,56px)}
+.project__head{display:grid;grid-template-columns:auto 1fr;gap:clamp(24px,5vw,70px);align-items:start;margin-bottom:clamp(36px,5vh,60px)}
+.project__idx{font-family:var(--disp);font-weight:700;font-size:clamp(4.4rem,11vw,10rem);line-height:.85;
+  color:transparent;-webkit-text-stroke:1.5px var(--ink);transition:color .5s var(--ease)}
+.project__idx:hover{color:var(--accent);-webkit-text-stroke-color:var(--accent)}
+.project__title h3{font-family:var(--disp);font-weight:600;font-size:clamp(1.5rem,3.6vw,2.7rem);line-height:1.1;text-transform:uppercase;margin-bottom:22px}
+.p-meta{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line-strong)}
+.p-meta div{padding:14px 18px;border-left:1px solid var(--line-strong)}
+.p-meta div:first-child{border-left:none}
+.p-meta dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.24em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.p-meta dd{font-size:.9rem;font-weight:500;line-height:1.45}
+.project__desc{max-width:72ch;margin:clamp(30px,4vh,46px) 0;color:var(--ink-soft)}
+.project__desc strong{color:var(--ink)}
+figure.shot{position:relative;overflow:hidden;border:1px solid var(--line-strong)}
+figure.shot img{width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease)}
+figure.shot:hover img{transform:scale(1.045)}
+figure.shot figcaption{position:absolute;left:0;bottom:0;background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;padding:10px 16px}
+.shot--main{aspect-ratio:16/9;margin-bottom:clamp(18px,2.5vw,28px)}
+.shot--main img{animation:breathe 20s ease-in-out infinite alternate}
+.shots-duo{display:grid;grid-template-columns:1fr 1fr;gap:clamp(18px,2.5vw,28px);align-items:start}
+.shots-duo .shot{aspect-ratio:4/5}
+.shots-duo .shot:last-child{margin-top:14%}
+.teaser{margin-top:clamp(50px,8vh,80px);border:1px dashed var(--line-strong);padding:clamp(26px,4vw,40px);
+  display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--ink-soft)}
+.teaser b{color:var(--accent);font-weight:500}
+
+/* ---------- 05 · КОНТАКТЫ (тёмная) ---------- */
+.section--dark{background:var(--ink);color:var(--paper)}
+.section--dark .section-head{border-color:var(--line-paper)}
+.section--dark .sheet-no{color:rgba(237,232,222,.5)}
+.c-lead{font-family:var(--disp);font-weight:500;font-size:clamp(1.3rem,3vw,2.2rem);text-transform:uppercase;max-width:26ch;line-height:1.3;margin-bottom:clamp(40px,6vh,64px)}
+.c-lead em{font-style:normal;color:var(--accent)}
+.c-phone{display:inline-block;font-family:var(--disp);font-weight:600;
+  font-size:clamp(1.7rem,5.6vw,5.2rem);line-height:1.1;letter-spacing:.01em;position:relative;padding-bottom:10px}
+.c-phone::after{content:'';position:absolute;left:0;bottom:0;width:100%;height:3px;background:var(--accent);
+  transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ease)}
+.c-phone:hover::after{transform:scaleX(1);transform-origin:left}
+.c-phone:hover{color:var(--accent)}
+.c-actions{display:flex;gap:16px;flex-wrap:wrap;margin:clamp(36px,5vh,54px) 0 clamp(50px,7vh,70px)}
+.btn{display:inline-flex;align-items:center;gap:12px;border:1px solid var(--paper);
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  padding:16px 26px;transition:background .3s,color .3s,transform .3s}
+.btn:hover{background:var(--paper);color:var(--ink);transform:translateY(-3px)}
+.btn--accent{border-color:var(--accent);background:var(--accent);color:var(--paper)}
+.btn--accent:hover{background:var(--paper);border-color:var(--paper);color:var(--ink)}
+.c-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;border-top:1px solid var(--line-paper);padding-top:30px}
+.c-grid dt{font-family:var(--mono);font-size:9.5px;letter-spacing:.26em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.c-grid dd{font-size:.95rem;opacity:.85}
+
+/* футер */
+.footer{background:var(--ink);color:var(--paper);border-top:1px solid var(--line-paper);
+  padding:26px var(--pad-x);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+.footer a{color:var(--accent)}
+.footer a:hover{text-decoration:underline}
+
+/* ---------- адаптив ---------- */
+@media(max-width:1024px){
+  .about{grid-template-columns:1fr}
+  .about-media{position:static;max-width:440px}
+  .exp{grid-template-columns:1fr}
+  .exp__company{position:static}
+  .stamp{display:none}
+  .toc__note{display:none}
+  .toc a{grid-template-columns:52px 1fr auto 30px}
+  .c-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .nav{display:none}
+  .burger{display:block}
+  .header__meta{display:none}
+  .p-meta{grid-template-columns:1fr 1fr}
+  .p-meta div:nth-child(3){border-left:none}
+  .p-meta div{border-top:1px solid var(--line-strong)}
+  .p-meta div:nth-child(-n+2){border-top:none}
+  .shots-duo{grid-template-columns:1fr}
+  .shots-duo .shot:last-child{margin-top:0}
+  .project__head{grid-template-columns:1fr}
+  .skills-grid{grid-template-columns:1fr}
+  .hero{background-size:52px 52px}
+  .badge{width:88px;height:88px}
+}
+
+/* ---------- prefers-reduced-motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  .js .h-reveal,.js [data-reveal]{opacity:1;transform:none}
+  .mask>span{transform:none}
+}
+</style>
+<noscript><style>.loader{display:none}</style></noscript>
+</head>
+<body>
+
+<!-- прелоадер -->
+<div class="loader" id="loader" aria-hidden="true">
+  <div class="loader__inner">
+    <p class="loader__name mono">Портфолио · Архитектор · Минск</p>
+    <div class="loader__count" id="loaderCount">000</div>
+    <div class="loader__bar"><span id="loaderBar"></span></div>
+  </div>
+</div>
+
+<div class="noise" aria-hidden="true"></div>
+<div class="progress" id="progress" aria-hidden="true"></div>
+<div class="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"></div>
+
+<!-- ================= ШАПКА ================= -->
+<header class="header" id="header">
+  <!-- ✏️ ЗАМЕНИТЕ инициалы на свои -->
+  <a class="logo" href="#top" aria-label="На главную">
+    <span class="logo__mark">А.</span>
+    <span class="logo__txt">архитектор<br>портфолио</span>
+  </a>
+  <nav class="nav" aria-label="Основная навигация">
+    <a href="#about"><i>01</i>Обо мне</a>
+    <a href="#experience"><i>03</i>Опыт</a>
+    <a href="#projects"><i>04</i>Проекты</a>
+    <a href="#contacts"><i>05</i>Контакты</a>
+  </nav>
+  <div class="header__meta"><span class="dot"></span><span class="js-clock">--:--:--</span>&nbsp;MSK</div>
+  <button class="burger" id="burger" aria-label="Открыть меню" aria-expanded="false">
+    <span></span><span></span>
+  </button>
+</header>
+
+<!-- полноэкранное меню -->
+<nav class="menu" id="menu" aria-label="Полное меню">
+  <a class="m-link" href="#contents"><i>00</i>Содержание</a>
+  <a class="m-link" href="#about"><i>01</i>Обо мне</a>
+  <a class="m-link" href="#skills"><i>02</i>Инструменты</a>
+  <a class="m-link" href="#experience"><i>03</i>Опыт работы</a>
+  <a class="m-link" href="#projects"><i>04</i>Проекты</a>
+  <a class="m-link" href="#contacts"><i>05</i>Контакты</a>
+  <div class="menu__foot">
+    <span>Минск · Беларусь</span>
+    <span>+375 29 814-01-42</span>
+  </div>
+</nav>
+
+<main id="top">
+
+<!-- ================= HERO · ТИТУЛЬНЫЙ ЛИСТ ================= -->
+<section class="hero" aria-label="Главный экран">
+  <span class="mark tl" aria-hidden="true">+</span>
+  <span class="mark tr" aria-hidden="true">+</span>
+  <span class="mark bl" aria-hidden="true">+</span>
+  <span class="mark br" aria-hidden="true">+</span>
+
+  <div class="hero__top">
+    <p class="hero__kicker h-reveal" style="--d:.15s"><b>Портфолио</b> · 2026 · раздел АР</p>
+    <aside class="stamp h-reveal" style="--d:.3s" aria-hidden="true">
+      <div><span>Шифр</span><b>PF—26/01</b></div>
+      <div><span>Объект</span><b>ПОРТФОЛИО АРХИТЕКТОРА</b></div>
+      <div><span>Стадия</span><b>Э</b></div>
+      <div><span>Лист</span><b>01</b></div>
+      <div><span>Масштаб</span><b>1:1</b></div>
+      <div><span>Дата</span><b>08.2026</b></div>
+    </aside>
+  </div>
+
+  <div class="hero__main">
+    <!-- ✏️ ЗАМЕНИТЕ имя и фамилию на свои -->
+    <p class="hero__author h-reveal" style="--d:.35s">Имя Фамилия <em>/</em> Минск, Беларусь</p>
+    <h1 id="heroTitle" class="h-reveal" style="--d:.45s">Архитектор</h1>
+    <p class="hero__sub h-reveal" style="--d:.6s">
+      Проектирую <strong>жилые и общественные здания</strong>, разрабатываю интерьеры
+      и 3D-визуализации. Внимательна к деталям — от первого эскиза до рабочего чертежа.
+    </p>
+  </div>
+
+  <div class="hero__bottom">
+    <div class="scroll-hint h-reveal" style="--d:.75s">
+      <span class="line"></span> листайте вниз
+    </div>
+    <svg class="badge h-reveal" style="--d:.8s" viewBox="0 0 120 120" aria-hidden="true">
+      <defs><path id="circ" d="M60,60 m-46,0 a46,46 0 1,1 92,0 a46,46 0 1,1 -92,0"/></defs>
+      <text><textPath href="#circ" textLength="288">ПРОЕКТИРОВАНИЕ · АРХИТЕКТУРА · ВИЗУАЛИЗАЦИЯ · ИНТЕРЬЕРЫ ·</textPath></text>
+      <circle cx="60" cy="60" r="3.5" fill="#D4491F"/>
+    </svg>
+  </div>
+</section>
+
+<!-- бегущая строка -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee__track">
+    <div class="marquee__group">
+      <span>Малоэтажное жильё</span><i>✦</i><span>Общественные здания</span><i>✦</i>
+      <span>Интерьеры</span><i>✦</i><span>Фасады · цветовые решения</span><i>✦</i>
+      <span>3D-визуализация</span><i>✦</i><span>Рабочая документация</span><i>✦</i>
+    </div>
+    <div class="marquee__group">
+      <span>Малоэтажное жильё</span><i>✦</i><span>Общественные здания</span><i>✦</i>
+      <span>Интерьеры</span><i>✦</i><span>Фасады · цветовые решения</span><i>✦</i>
+      <span>3D-визуализация</span><i>✦</i><span>Рабочая документация</span><i>✦</i>
+    </div>
+  </div>
+</div>
+
+<!-- ================= 00 · СОДЕРЖАНИЕ ================= -->
+<section class="section" id="contents">
+  <div class="section-head">
+    <div>
+      <span class="section-label">00 / Навигация</span>
+      <h2 class="section-title" data-scramble>Содержание</h2>
+    </div>
+    <span class="sheet-no">Лист 01 / 06</span>
+  </div>
+
+  <ol class="toc" data-reveal>
+    <li><a href="#about">
+      <span class="toc__num">01</span><span class="toc__name">Обо мне</span>
+      <span class="toc__dots"></span><span class="toc__note">образование · подход</span><span class="toc__arrow">→</span></a></li>
+    <li><a href="#skills">
+      <span class="toc__num">02</span><span class="toc__name">Инструменты</span>
+      <span class="toc__dots"></span><span class="toc__note">AutoCAD · Figma · Photoshop</span><span class="toc__arrow">→</span></a></li>
+    <li><a href="#experience">
+      <span class="toc__num">03</span><span class="toc__name">Опыт работы</span>
+      <span class="toc__dots"></span><span class="toc__note">ОАО «МАПИД»</span><span class="toc__arrow">→</span></a></li>
+    <li><a href="#projects">
+      <span class="toc__num">04</span><span class="toc__name">Проекты</span>
+      <span class="toc__dots"></span><span class="toc__note">01 · Малоэтажный жилой дом</span><span class="toc__arrow">→</span></a></li>
+    <li><a href="#contacts">
+      <span class="toc__num">05</span><span class="toc__name">Контакты</span>
+      <span class="toc__dots"></span><span class="toc__note">+375 29 814-01-42</span><span class="toc__arrow">→</span></a></li>
+  </ol>
+</section>
+
+<!-- ================= 01 · ОБО МНЕ ================= -->
+<section class="section" id="about">
+  <div class="section-head">
+    <div>
+      <span class="section-label">01 / Профиль</span>
+      <h2 class="section-title" data-scramble>Обо мне</h2>
+    </div>
+    <span class="sheet-no">Лист 02 / 06</span>
+  </div>
+
+  <div class="about">
+    <div class="about-media" data-reveal>
+      <figure class="frame">
+        <div class="frame__img">
+          <!-- ваше фото -->
+          <img src="img/iam.png" alt="Портрет архитектора"
+               data-seed="architect-portrait" data-w="900" data-h="1125">
+        </div>
+        <figcaption><span>Фото · личный архив</span><span>MIN 53°54′N</span></figcaption>
+      </figure>
+    </div>
+
+    <div class="about-body">
+      <div class="mask" data-reveal><span>
+        <h2>Проектирую с вниманием <em>к контексту</em> и к человеку</h2>
+      </span></div>
+      <p data-reveal style="--d:.1s">
+        Я — архитектор из Минска. В 2025 году окончила <strong>МГКАИС</strong> и работаю
+        техником-архитектором в <strong>ОАО «МАПИД»</strong>, где занимаюсь графической
+        подготовкой проектов полного цикла: от эскизных решений до рабочих чертежей раздела АР.
+      </p>
+      <p data-reveal style="--d:.18s">
+        Мне близко вдумчивое проектирование — когда форма рождается из контекста, света
+        и потребностей человека. Люблю чистую графику чертежей, точность узлов и момент,
+        когда плоская схема превращается в <strong>пространство для жизни</strong>.
+      </p>
+      <blockquote class="pull" data-reveal style="--d:.24s">
+        «Хорошая архитектура начинается с точного чертежа и честного отношения к месту».
+      </blockquote>
+      <div class="edu" data-reveal style="--d:.3s">
+        <div class="edu__head">Образование</div>
+        <div class="edu__row">
+          <span class="edu__years">2021 — 2025</span>
+          <span class="edu__place">МГКАИС</span>
+          <span class="edu__spec">специальность «Архитектура»</span>
+        </div>
+      </div>
+      <div class="chips" data-reveal style="--d:.36s">
+        <span class="chip">Жилые здания</span>
+        <span class="chip">Общественные здания</span>
+        <span class="chip">Раздел АР</span>
+        <span class="chip">Фасады</span>
+        <span class="chip">Интерьеры</span>
+        <span class="chip">3D + AI</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 02 · ИНСТРУМЕНТЫ ================= -->
+<section class="section section--pad-top" id="skills">
+  <div class="section-head">
+    <div>
+      <span class="section-label">02 / Стек</span>
+      <h2 class="section-title" data-scramble>Инструменты</h2>
+    </div>
+    <span class="sheet-no">Лист 03 / 06</span>
+  </div>
+
+  <div class="skills-grid">
+    <article class="skill" data-reveal>
+      <div class="skill__top"><span class="skill__idx">S.01</span><span class="skill__lvl">90%</span></div>
+      <h3>AutoCAD</h3>
+      <p>Рабочая документация: планы, разрезы, фасады, схемы и спецификации раздела АР.</p>
+      <div class="bar"><span class="bar-fill" data-level="90"></span></div>
+    </article>
+    <article class="skill" data-reveal style="--d:.08s">
+      <div class="skill__top"><span class="skill__idx">S.02</span><span class="skill__lvl">85%</span></div>
+      <h3>Photoshop</h3>
+      <p>Постобработка визуализаций, графические коллажи и архитектурная подача проектов.</p>
+      <div class="bar"><span class="bar-fill" data-level="85"></span></div>
+    </article>
+    <article class="skill" data-reveal style="--d:.16s">
+      <div class="skill__top"><span class="skill__idx">S.03</span><span class="skill__lvl">80%</span></div>
+      <h3>Figma</h3>
+      <p>Макеты, презентации, подбор материалов и наглядные материалы для заказчика.</p>
+      <div class="bar"><span class="bar-fill" data-level="80"></span></div>
+    </article>
+    <article class="skill" data-reveal style="--d:.24s">
+      <div class="skill__top"><span class="skill__idx">S.04</span><span class="skill__lvl">75%</span></div>
+      <h3>3ds Max + Corona Render</h3>
+      <p>Фотореалистичная 3D-визуализация экстерьеров и интерьеров для защиты проектных решений.</p>
+      <div class="bar"><span class="bar-fill" data-level="75"></span></div>
+    </article>
+    <article class="skill skill--wide" data-reveal style="--d:.3s">
+      <h3><span class="live-dot"></span>AI-визуализация</h3>
+      <p>Генерация концептов и быстрая проработка образов проектов с помощью нейросетей.</p>
+      <span class="skill__idx">NEW · 2025 →</span>
+    </article>
+  </div>
+</section>
+
+<!-- ================= 03 · ОПЫТ РАБОТЫ ================= -->
+<section class="section" id="experience">
+  <div class="section-head">
+    <div>
+      <span class="section-label">03 / Карьера</span>
+      <h2 class="section-title" data-scramble>Опыт работы</h2>
+    </div>
+    <span class="sheet-no">Лист 04 / 06</span>
+  </div>
+
+  <div class="exp">
+    <div class="exp__company" data-reveal>
+      <div class="exp__logo">МАПИД<i>.</i></div>
+      <p class="exp__role">Техник-архитектор 2 категории</p>
+      <div class="exp__meta">
+        <span><b>Период</b> · сентябрь 2025</span>
+        <span><b>Город</b> · Минск, Беларусь</span>
+        <span><b>Раздел</b> · АР</span>
+      </div>
+      <div class="chips">
+        <span class="chip">Фасады</span><span class="chip">ВАО</span>
+        <span class="chip">Спецификации</span><span class="chip">СНиП</span>
+        <span class="chip">3D / AI</span>
+      </div>
+    </div>
+
+    <ol class="duties">
+      <li data-reveal><p>Работа с разделом АР: разработка цветовых решений фасадов жилых домов.</p></li>
+      <li data-reveal style="--d:.05s"><p>Разработка ВАО в составе проектной документации.</p></li>
+      <li data-reveal style="--d:.1s"><p>Выполнение архитектурных чертежей и схем по эскизам архитектора, оформление согласно требованиям нормативной документации.</p></li>
+      <li data-reveal style="--d:.15s"><p>Участие в проектировании жилых, общественных и промышленных объектов.</p></li>
+      <li data-reveal style="--d:.2s"><p>Составление спецификаций строительных материалов, оборудования и изделий; подбор материалов с учётом их характеристик.</p></li>
+      <li data-reveal style="--d:.25s"><p>Работа с нормативной документацией: знание строительных норм и правил.</p></li>
+      <li data-reveal style="--d:.3s"><p>Создание проектов с применением 3D-визуализации, в том числе генерация визуализаций с помощью ИИ.</p></li>
+      <li data-reveal style="--d:.35s"><p>Разработка интерьеров и прямая коммуникация с заказчиком.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ================= 04 · ПРОЕКТЫ ================= -->
+<section class="section" id="projects">
+  <div class="section-head">
+    <div>
+      <span class="section-label">04 / Избранные работы</span>
+      <h2 class="section-title" data-scramble>Проекты</h2>
+    </div>
+    <span class="sheet-no">Лист 05 / 06</span>
+  </div>
+
+  <article class="project">
+    <div class="project__head">
+      <div class="project__idx" aria-hidden="true">01</div>
+      <div class="project__title">
+        <div class="mask" data-reveal><span><h3>Малоэтажный жилой дом</h3></span></div>
+        <dl class="p-meta" data-reveal style="--d:.1s">
+          <div><dt>Тип</dt><dd>Курсовой проект · малоэтажное жильё</dd></div>
+          <div><dt>Год</dt><dd>2023</dd></div>
+          <div><dt>Локация</dt><dd>Сельская местность, у соснового леса</dd></div>
+          <div><dt>Софт</dt><dd>AutoCAD · 3ds Max + Corona · Photoshop</dd></div>
+        </dl>
+      </div>
+    </div>
+
+    <div class="project__desc" data-reveal>
+      <p>
+        <strong>Дом, развёрнутый к лесу.</strong> Курсовой проект 2023 года — малоэтажный
+        жилой дом для жизни в окружении природы. Участок расположен в сельской местности
+        и одной из границ примыкает к сосновому бору. Именно это стало отправной точкой
+        планировочного решения: дом смещён ближе к въезду, чтобы раскрыть просторный
+        задний двор в сторону леса и впустить пейзаж в жилые пространства.
+      </p>
+      <br>
+      <p>
+        Проект проработан от генерального плана до фасадов: выполнены планы и разрезы,
+        цветовое решение и фотореалистичные визуализации в 3ds Max + Corona Render.
+      </p>
+    </div>
+
+    <figure class="shot shot--main" data-reveal data-parallax="0.03">
+      <img src="img/hose_01.png" alt="Малоэтажный жилой дом — главная визуализация экстерьера" loading="lazy"
+           data-seed="pine-forest-house-main" data-w="1600" data-h="900">
+      <figcaption>Фиг. 01 — экстерьер</figcaption>
+    </figure>
+
+    <div class="shots-duo">
+      <figure class="shot" data-reveal data-parallax="-0.045">
+        <img src="img/hose_02.png" alt="Малоэтажный жилой дом — фрагмент фасада" loading="lazy"
+             data-seed="pine-forest-house-facade" data-w="1000" data-h="1250">
+        <figcaption>Фиг. 02</figcaption>
+      </figure>
+      <figure class="shot" data-reveal style="--d:.12s" data-parallax="0.06">
+        <img src="img/hose_03.png" alt="Малоэтажный жилой дом — вид со стороны двора" loading="lazy"
+             data-seed="pine-forest-house-yard" data-w="1000" data-h="1250">
+        <figcaption>Фиг. 03</figcaption>
+      </figure>
+    </div>
+
+    <div class="teaser" data-reveal>
+      <span><b>02</b> — следующий проект</span>
+      <span>в разработке · следите за обновлениями</span>
+    </div>
+  </article>
+</section>
+
+<!-- ================= 05 · КОНТАКТЫ ================= -->
+<section class="section section--dark" id="contacts">
+  <div class="section-head">
+    <div>
+      <span class="section-label">05 / Связь</span>
+      <h2 class="section-title" data-scramble>Контакты</h2>
+    </div>
+    <span class="sheet-no">Лист 06 / 06</span>
+  </div>
+
+  <p class="c-lead" data-reveal>Открыта к проектам, стажировкам и <em>интересным предложениям</em> —</p>
+
+  <a class="c-phone" href="tel:+375298140142" data-reveal style="--d:.1s">+375 29 814-01-42</a>
+
+  <div class="c-actions" data-reveal style="--d:.18s">
+    <a class="btn btn--accent" href="tel:+375298140142">Позвонить ↗</a>
+    <button class="btn" id="copyPhone" type="button">Скопировать номер</button>
+  </div>
+
+  <dl class="c-grid" data-reveal style="--d:.24s">
+    <div><dt>Локация</dt><dd>Минск, Беларусь</dd></div>
+    <div><dt>Телефон</dt><dd>+375 29 814-01-42</dd></div>
+    <div><dt>Статус</dt><dd>открыта к предложениям</dd></div>
+    <div><dt>Местное время</dt><dd><span class="js-clock">--:--:--</span> MSK</dd></div>
+  </dl>
+</section>
+
+</main>
+
+<footer class="footer">
+  <span>© <span id="year">2026</span> · Портфолио архитектора</span>
+  <span>спасибо за внимание ♡</span>
+  <a href="#top">наверх ↑</a>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+const $  = (s,c=document)=>c.querySelector(s);
+const $$ = (s,c=document)=>[...c.querySelectorAll(s)];
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- прелоадер ---------- */
+const loader = $('#loader');
+function finishLoad(){
+  loader.classList.add('loader--done');
+  document.body.classList.add('loaded');
+  if(!RM) scramble($('#heroTitle'));
+  setTimeout(()=>loader.remove(), 1300);
+}
+if(RM){ finishLoad(); }
+else{
+  let n = 0;
+  const count = $('#loaderCount'), bar = $('#loaderBar');
+  const t = setInterval(()=>{
+    n = Math.min(100, n + Math.ceil(Math.random()*14));
+    count.textContent = String(n).padStart(3,'0');
+    bar.style.width = n + '%';
+    if(n >= 100){ clearInterval(t); setTimeout(finishLoad, 260); }
+  }, 90);
+}
+
+/* ---------- дешифровка заголовков ---------- */
+const CHARS = 'АБВГДЕЗИКЛМНОПРСТУФХЦЧШЫЭЮЯ0123456789#/\\—';
+function scramble(el){
+  if(!el || el.dataset.done) return;
+  el.dataset.done = 1;
+  if(RM){ return; }
+  const text = el.textContent, dur = 950, start = performance.now();
+  (function tick(now){
+    const p = Math.min(1,(now-start)/dur);
+    const shown = Math.floor(p*text.length);
+    let out = '';
+    for(let i=0;i<text.length;i++){
+      const ch = text[i];
+      out += (ch===' ') ? ' ' : (i<shown ? ch : CHARS[(Math.random()*CHARS.length)|0]);
+    }
+    el.textContent = out;
+    if(p<1) requestAnimationFrame(tick); else el.textContent = text;
+  })(start);
+}
+
+/* ---------- появление при скролле ---------- */
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    e.target.classList.add('in');
+    if(e.target.hasAttribute('data-scramble')) scramble(e.target);
+    $$('.bar-fill', e.target).forEach(b=> b.style.width = b.dataset.level + '%');
+    io.unobserve(e.target);
+  });
+},{threshold:.15});
+$$('[data-reveal], .mask, [data-scramble], .skills-grid').forEach(el=>io.observe(el));
+
+/* ---------- скролл: прогресс, шапка, параллакс ---------- */
+const progress = $('#progress'), header = $('#header');
+const pEls = $$('[data-parallax]');
+let ticking = false;
+function onScroll(){ if(!ticking){ requestAnimationFrame(update); ticking = true; } }
+function update(){
+  ticking = false;
+  const max = document.documentElement.scrollHeight - innerHeight;
+  progress.style.width = (max>0 ? (scrollY/max)*100 : 0) + '%';
+  header.classList.toggle('scrolled', scrollY > 40);
+  if(!RM && innerWidth > 768){
+    const vh = innerHeight;
+    pEls.forEach(el=>{
+      const r = el.getBoundingClientRect();
+      if(r.bottom < -100 || r.top > vh+100) return;
+      const off = (r.top + r.height/2 - vh/2) * parseFloat(el.dataset.parallax);
+      el.style.transform = `translateY(${off.toFixed(1)}px)`;
+    });
+  }
+}
+addEventListener('scroll', onScroll, {passive:true});
+update();
+
+/* ---------- навигация: активный пункт ---------- */
+const spy = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting) return;
+    $$('.nav a').forEach(a=>a.classList.toggle('active', a.getAttribute('href') === '#'+e.target.id));
+  });
+},{rootMargin:'-40% 0px -55% 0px'});
+['about','experience','projects','contacts'].forEach(id=>{ const s=$('#'+id); if(s) spy.observe(s); });
+
+/* ---------- меню ---------- */
+const burger = $('#burger');
+function setMenu(open){
+  document.body.classList.toggle('menu-open', open);
+  burger.classList.toggle('is-open', open);
+  burger.setAttribute('aria-expanded', open);
+}
+burger.addEventListener('click', ()=>setMenu(!document.body.classList.contains('menu-open')));
+$$('#menu a').forEach(a=>a.addEventListener('click', ()=>setMenu(false)));
+addEventListener('keydown', e=>{ if(e.key==='Escape') setMenu(false); });
+
+/* ---------- время в Минске ---------- */
+const fmt = new Intl.DateTimeFormat('ru-RU',{timeZone:'Europe/Minsk',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+function tickClock(){ const t = fmt.format(new Date()); $$('.js-clock').forEach(el=>el.textContent=t); }
+tickClock(); setInterval(tickClock, 1000);
+
+/* ---------- кастомный курсор ---------- */
+if(matchMedia('(pointer:fine)').matches && !RM){
+  document.documentElement.classList.add('has-cursor');
+  const dot = $('.cursor-dot'), ring = $('.cursor-ring');
+  let mx=innerWidth/2, my=innerHeight/2, rx=mx, ry=my;
+  addEventListener('mousemove', e=>{ mx=e.clientX; my=e.clientY;
+    dot.style.left = mx+'px'; dot.style.top = my+'px'; });
+  (function loop(){
+    rx += (mx-rx)*.16; ry += (my-ry)*.16;
+    ring.style.left = rx+'px'; ring.style.top = ry+'px';
+    requestAnimationFrame(loop);
+  })();
+  addEventListener('mouseover', e=>{
+    ring.classList.toggle('big', !!e.target.closest('a,button,.toc a,.skill'));
+  });
+}
+
+/* ---------- копирование номера ---------- */
+$('#copyPhone').addEventListener('click', async function(){
+  const btn = this, num = '+375298140142';
+  try{ await navigator.clipboard.writeText(num); }
+  catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = num; document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); ta.remove();
+  }
+  const old = btn.textContent;
+  btn.textContent = 'Скопировано ✓';
+  setTimeout(()=>btn.textContent = old, 1800);
+});
+
+/* ---------- запасные изображения (если файла нет) ---------- */
+$$('img[data-seed]').forEach(img=>{
+  img.addEventListener('error', ()=>{
+    if(img.dataset.fb) return;
+    img.dataset.fb = 1;
+    img.src = `https://picsum.photos/seed/${img.dataset.seed}/${img.dataset.w||1200}/${img.dataset.h||800}`;
+  }, {once:true});
+});
+
+/* ---------- год в футере ---------- */
+$('#year').textContent = new Date().getFullYear();
+</script>
+</body>
+</html>
