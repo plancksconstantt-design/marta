@@ -247,7 +247,7 @@ body.loaded .h-reveal{opacity:1;transform:none}
 
 /* БЛОК 15: ОПЫТ РАБОТЫ */
 .exp{display:grid;grid-template-columns:1fr 1.6fr;gap:clamp(40px,6vw,90px);align-items:start}
-.exp__company{position:sticky;top:120px}
+.exp__company{position:relative;top:120px}
 .exp__logo{font-family:var(--disp);font-weight:700;font-size:clamp(2.2rem,5vw,3.6rem);line-height:1;letter-spacing:.01em}
 .exp__logo i{font-style:normal;color:var(--accent)}
 .exp__role{margin-top:16px;font-weight:600;font-size:1.05rem}
