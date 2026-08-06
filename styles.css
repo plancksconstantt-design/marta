@@ -386,6 +386,81 @@ figure.shot figcaption{position:absolute;left:0;bottom:0;background:var(--ink);c
   .shots-mosaic .shot:nth-child(1),
   .shots-mosaic .shot:nth-child(6){aspect-ratio:16 / 9 !important}
 }
+/* БЛОК 16.3: ДВУХКОЛОНОЧНАЯ КОМПОЗИЦИЯ (проект 04 — интерьеры) */
+.project__subtitle{
+  font-family:var(--disp);font-weight:500;font-size:clamp(1.1rem,2.2vw,1.4rem);
+  text-transform:uppercase;margin-bottom:16px;
+  padding-bottom:12px;border-bottom:1px solid var(--line);
+  color:var(--ink);
+}
+
+.project__split{
+  display:grid;
+  grid-template-columns:1fr 1.4fr;
+  gap:clamp(24px, 4vw, 56px);
+  align-items:start;
+  padding:clamp(30px, 5vh, 50px) 0;
+  border-top:1px solid var(--line);
+}
+.project__split:first-of-type{border-top:none;padding-top:clamp(20px,3vh,30px)}
+
+.project__split--reverse{
+  grid-template-columns:1.4fr 1fr;
+}
+.project__split--reverse .project__split-text{order:2}
+.project__split--reverse .project__split-gallery{order:1}
+
+.project__split-text{
+  position:sticky;top:110px;
+}
+.project__split-text p{
+  color:var(--ink-soft);margin-bottom:18px;
+}
+.project__split-text strong{color:var(--ink)}
+
+/* сетка 2x2 для 4 картинок */
+.project__split-gallery{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-auto-rows:1fr;
+  gap:clamp(10px, 1.5vw, 16px);
+}
+.project__split-gallery .shot{
+  position:relative;overflow:hidden;
+  border:1px solid var(--line-strong);cursor:zoom-in;
+  aspect-ratio:4 / 5;
+  margin:0;
+}
+.project__split-gallery .shot img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.project__split-gallery figcaption{
+  position:absolute;top:10px;left:10px;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  padding:6px 10px;z-index:2;
+}
+
+/* сетка для 5 картинок: 2 + 2 + 1 широкая */
+.project__split-gallery--five{
+  grid-template-columns:1fr 1fr;
+}
+.project__split-gallery--five .shot:nth-child(5){
+  grid-column:1 / -1;
+  aspect-ratio:16 / 9;
+}
+
+@media(max-width:900px){
+  .project__split,
+  .project__split--reverse{
+    grid-template-columns:1fr;
+  }
+  .project__split-text{position:static}
+  .project__split--reverse .project__split-text{order:1}
+  .project__split--reverse .project__split-gallery{order:2}
+  .project__split-gallery .shot{aspect-ratio:1 / 1}
+  .project__split-gallery--five .shot:nth-child(5){aspect-ratio:16 / 9}
+}
 
 /* БЛОК 17: КОНТАКТЫ */
 .section--dark{background:var(--ink);color:var(--paper)}
