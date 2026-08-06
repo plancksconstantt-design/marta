@@ -480,6 +480,40 @@ figure.shot figcaption{position:absolute;left:0;bottom:0;background:var(--ink);c
   .project__split-gallery--three .shot:nth-child(2),
   .project__split-gallery--three .shot:nth-child(3){aspect-ratio:1 / 1}
 }
+
+
+
+/* БЛОК 16.4: СЕТКА ИЗ ТРЁХ ИЗОБРАЖЕНИЙ (проект 05) */
+.shots-trio{
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr;
+  gap:clamp(10px, 1.5vw, 16px);
+  margin:clamp(24px, 4vh, 40px) 0;
+}
+.shots-trio .shot{
+  position:relative;overflow:hidden;
+  border:1px solid var(--line-strong);cursor:zoom-in;
+  aspect-ratio:4 / 3;
+  margin:0;
+}
+.shots-trio .shot img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.shots-trio figcaption{
+  position:absolute;left:0;bottom:0;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  padding:10px 16px;
+}
+
+@media(max-width:768px){
+  .shots-trio{grid-template-columns:1fr}
+  .shots-trio .shot{aspect-ratio:16 / 9}
+}
+
+
+
+
 /* БЛОК 17: КОНТАКТЫ */
 .section--dark{background:var(--ink);color:var(--paper)}
 .section--dark .section-head{border-color:var(--line-paper)}
