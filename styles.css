@@ -461,7 +461,25 @@ figure.shot figcaption{position:absolute;left:0;bottom:0;background:var(--ink);c
   .project__split-gallery .shot{aspect-ratio:1 / 1}
   .project__split-gallery--five .shot:nth-child(5){aspect-ratio:16 / 9}
 }
+/* сетка для 3 картинок: 1 широкая сверху + 2 вертикальные снизу */
+.project__split-gallery--three{
+  grid-template-columns:1fr 1fr;
+}
+.project__split-gallery--three .shot:nth-child(1){
+  grid-column:1 / -1;
+  aspect-ratio:16 / 9;
+}
+.project__split-gallery--three .shot:nth-child(2),
+.project__split-gallery--three .shot:nth-child(3){
+  aspect-ratio:4 / 5;
+}
 
+/* мобильная версия для 3 картинок */
+@media(max-width:900px){
+  .project__split-gallery--three .shot:nth-child(1){aspect-ratio:16 / 9}
+  .project__split-gallery--three .shot:nth-child(2),
+  .project__split-gallery--three .shot:nth-child(3){aspect-ratio:1 / 1}
+}
 /* БЛОК 17: КОНТАКТЫ */
 .section--dark{background:var(--ink);color:var(--paper)}
 .section--dark .section-head{border-color:var(--line-paper)}
