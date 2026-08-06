@@ -388,12 +388,22 @@ figure.shot figcaption{position:absolute;left:0;bottom:0;background:var(--ink);c
 }
 /* БЛОК 16.3: ДВУХКОЛОНОЧНАЯ КОМПОЗИЦИЯ (проект 04 — интерьеры) */
 .project__subtitle{
+  position: relative;
   font-family:var(--disp);font-weight:500;font-size:clamp(1.1rem,2.2vw,1.4rem);
   text-transform:uppercase;margin-bottom:16px;
   padding-bottom:12px;border-bottom:1px solid var(--line);
   color:var(--ink);
 }
-
+.fin{
+  margin-left: 100px;
+}
+.project__subtitle_1{
+margin-left: 100px;
+  font-family:var(--disp);font-weight:500;font-size:clamp(1.1rem,2.2vw,1.4rem);
+  text-transform:uppercase;margin-bottom:16px;
+  padding-bottom:12px;border-bottom:1px solid var(--line);
+  color:var(--ink);
+}
 .project__split{
   display:grid;
   grid-template-columns:1fr 1.4fr;
@@ -510,6 +520,90 @@ figure.shot figcaption{position:absolute;left:0;bottom:0;background:var(--ink);c
   .shots-trio{grid-template-columns:1fr}
   .shots-trio .shot{aspect-ratio:16 / 9}
 }
+
+/* БЛОК 16.5: ТЕХНИЧЕСКОЕ ЗАДАНИЕ (проект 06) */
+.tz-list{
+  list-style:none;
+  max-width:72ch;
+  margin:clamp(20px,3vh,32px) 0;
+}
+.tz-list li{
+  padding:14px 6px 14px 28px;
+  border-top:1px solid var(--line);
+  color:var(--ink-soft);
+  position:relative;
+}
+.tz-list li:last-child{border-bottom:1px solid var(--line)}
+.tz-list li::before{
+  content:'';
+  position:absolute;
+  left:8px;top:22px;
+  width:6px;height:6px;
+  background:var(--accent);
+  transform:rotate(45deg);
+}
+.tz-list li strong{color:var(--ink);font-weight:600;margin-right:6px}
+
+/* БЛОК 16.6: СРАВНЕНИЕ ДО / ПОСЛЕ (проект 06) */
+.ba-compare{margin:clamp(30px,5vh,50px) 0}
+
+.ba-pair{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(12px, 2vw, 24px);
+  margin-bottom:clamp(28px, 4vh, 44px);
+  padding-bottom:clamp(28px, 4vh, 44px);
+  border-bottom:1px dashed var(--line-strong);
+}
+.ba-pair:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+
+.ba-col{display:flex;flex-direction:column}
+
+.ba-label{
+  font-family:var(--mono);
+  font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+  padding:8px 16px;
+  margin-bottom:14px;
+  align-self:flex-start;
+  border:1px solid var(--line-strong);
+  transition:background .3s,color .3s,border-color .3s;
+}
+.ba-label--before{
+  color:var(--ink-soft);
+  background:transparent;
+}
+.ba-label--after{
+  color:var(--paper);
+  background:var(--accent);
+  border-color:var(--accent);
+}
+
+.ba-col .shot{
+  position:relative;overflow:hidden;
+  border:1px solid var(--line-strong);cursor:zoom-in;
+  aspect-ratio:4 / 3;
+  margin:0;
+}
+.ba-col .shot img{
+  width:100%;height:100%;object-fit:cover;display:block;
+}
+.ba-col .shot figcaption{
+  position:absolute;left:0;bottom:0;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;text-transform:uppercase;
+  padding:8px 14px;
+}
+
+@media(max-width:768px){
+  .ba-pair{grid-template-columns:1fr}
+  .ba-col .shot{aspect-ratio:16 / 9}
+}
+
+
+
+
+
+
 
 
 
