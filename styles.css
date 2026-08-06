@@ -263,7 +263,8 @@ body.loaded .h-reveal{opacity:1;transform:none}
 .duties li:hover p{color:var(--ink)}
 
 /* БЛОК 16: ПРОЕКТЫ */
-.project{border-top:1px solid var(--line-strong);padding-top:clamp(34px,5vh,56px)}
+.project{margin-left: 100px;
+  border-top:1px solid var(--line-strong);padding-top:clamp(34px,5vh,56px)}
 .project__head{display:grid;grid-template-columns:auto 1fr;gap:clamp(24px,5vw,70px);align-items:start;margin-bottom:clamp(36px,5vh,60px)}
 .project__idx{font-family:var(--disp);font-weight:700;font-size:clamp(4.4rem,11vw,10rem);line-height:.85;
   color:transparent;-webkit-text-stroke:1.5px var(--ink);transition:color .5s var(--ease)}
@@ -300,7 +301,8 @@ figure.shot figcaption{position:absolute;left:0;bottom:0;background:var(--ink);c
 
 
 /* БЛОК 16.1: ЧЕРТЕЖИ */
-.drawings{margin-top:clamp(50px,7vh,80px);padding-top:clamp(40px,6vh,70px);border-top:1px solid var(--line)}
+.drawings{ margin-left: 100px;
+  margin-top:clamp(50px,7vh,80px);padding-top:clamp(40px,6vh,70px);border-top:1px solid var(--line)}
 .drawings__title{font-family:var(--disp);font-weight:600;font-size:clamp(1.3rem,2.8vw,2rem);
   text-transform:uppercase;margin-bottom:28px;padding-bottom:16px;border-bottom:1px solid var(--line);
   width:min(72ch, 100%);margin-right:auto}
