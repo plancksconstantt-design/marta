@@ -325,7 +325,67 @@ figure.shot figcaption{position:absolute;left:0;bottom:0;background:var(--ink);c
   .drawings__grid{grid-template-columns:1fr}
   .drawing img{aspect-ratio:16/9}
 }
+/* БЛОК 16.2: МОЗАИКА ИЗОБРАЖЕНИЙ (проект 03) */
+.shots-mosaic{
+  display:grid;
+  grid-template-columns:repeat(6, 1fr);
+  grid-template-areas:
+    "hero hero hero hero vert vert"
+    "a    a    b    b    c    c"
+    "cine cine cine cine cine cine";
+  gap:clamp(10px, 1.5vw, 16px);
+  margin:clamp(24px, 4vh, 40px) 0;
+}
+.shots-mosaic .shot{
+  position:relative;overflow:hidden;
+  border:1px solid var(--line-strong);cursor:zoom-in;
+  margin:0;
+}
+.shots-mosaic .shot img{width:100%;height:100%;object-fit:cover;display:block}
 
+/* img1 — главный, широкий 3:2 */
+.shots-mosaic .shot:nth-child(1){
+  grid-area:hero;
+  aspect-ratio:3 / 2;
+}
+/* img2 — вертикальный 3:4 */
+.shots-mosaic .shot:nth-child(2){
+  grid-area:vert;
+  aspect-ratio:3 / 4;
+}
+/* img3, img4, img5 — три горизонтальных 3:2 */
+.shots-mosaic .shot:nth-child(3){grid-area:a; aspect-ratio:3 / 2}
+.shots-mosaic .shot:nth-child(4){grid-area:b; aspect-ratio:3 / 2}
+.shots-mosaic .shot:nth-child(5){grid-area:c; aspect-ratio:3 / 2}
+/* img6 — финальный, широкий синематик 21:9 */
+.shots-mosaic .shot:nth-child(6){
+  grid-area:cine;
+  aspect-ratio:21 / 9;
+}
+
+/* подписи 01-06 */
+.shots-mosaic figcaption{
+  position:absolute;top:10px;left:10px;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  padding:6px 10px;z-index:2;
+}
+
+@media(max-width:768px){
+  .shots-mosaic{
+    grid-template-columns:1fr 1fr;
+    grid-template-areas:
+      "hero hero"
+      "vert vert"
+      "a    b"
+      "c    c"
+      "cine cine";
+    gap:8px;
+  }
+  .shots-mosaic .shot{aspect-ratio:4 / 3 !important}
+  .shots-mosaic .shot:nth-child(1),
+  .shots-mosaic .shot:nth-child(6){aspect-ratio:16 / 9 !important}
+}
 
 /* БЛОК 17: КОНТАКТЫ */
 .section--dark{background:var(--ink);color:var(--paper)}
