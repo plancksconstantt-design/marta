@@ -261,7 +261,26 @@ body.loaded .h-reveal{opacity:1;transform:none}
 .duties li::before{content:counter(du,decimal-leading-zero);font-family:var(--mono);font-size:12px;color:var(--accent);padding-top:4px}
 .duties li p{color:var(--ink-soft);font-size:.97rem}
 .duties li:hover p{color:var(--ink)}
+/* БЛОК 15.1: AI-ИНСТРУМЕНТЫ */
+.ai-tools{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  padding:12px 0 16px;
+}
 
+.chip--ai{
+  background:var(--paper-2);
+  color:var(--ink);
+  border-color:var(--line-strong);
+  transition:background .3s var(--ease),color .3s var(--ease),border-color .3s var(--ease),transform .3s var(--ease);
+}
+.chip--ai:hover{
+  background:var(--ink);
+  color:var(--paper);
+  border-color:var(--ink);
+  transform:translateY(-2px);
+}
 /* БЛОК 16: ПРОЕКТЫ */
 .project{margin-left: 100px;
   border-top:1px solid var(--line-strong);padding-top:clamp(34px,5vh,56px)}
