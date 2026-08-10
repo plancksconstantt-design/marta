@@ -618,7 +618,92 @@ margin-left: 100px;
   .ba-col .shot{aspect-ratio:16 / 9}
 }
 
+/* БЛОК 16.7: СЕТКИ ДЛЯ ПРОЕКТА 07 */
 
+/* Сетка 2×2 (4 картинки) */
+.shots-grid-4{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(10px, 1.5vw, 16px);
+  margin:clamp(20px, 3vh, 32px) 0;
+}
+.shots-grid-4 .shot{
+  position:relative;overflow:hidden;
+  border:1px solid var(--line-strong);cursor:zoom-in;
+  aspect-ratio:4 / 3;margin:0;
+}
+.shots-grid-4 .shot img{width:100%;height:100%;object-fit:cover;display:block}
+.shots-grid-4 figcaption{
+  position:absolute;top:10px;left:10px;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  padding:6px 10px;z-index:2;
+}
+
+/* Сетка 4×2 (8 картинок) */
+.shots-grid-8{
+  display:grid;
+  grid-template-columns:repeat(4, 1fr);
+  gap:clamp(8px, 1.2vw, 14px);
+  margin:clamp(20px, 3vh, 32px) 0;
+}
+.shots-grid-8 .shot{
+  position:relative;overflow:hidden;
+  border:1px solid var(--line-strong);cursor:zoom-in;
+  aspect-ratio:1 / 1;margin:0;
+}
+.shots-grid-8 .shot img{width:100%;height:100%;object-fit:cover;display:block}
+.shots-grid-8 figcaption{
+  position:absolute;top:8px;left:8px;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+  padding:4px 8px;z-index:2;
+}
+
+/* Сетка для 5 картинок (2 + 2 + 1 широкая) — переиспользуем логику из проекта 04 */
+.shots-grid-5{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:clamp(10px, 1.5vw, 16px);
+  margin:clamp(20px, 3vh, 32px) 0;
+}
+.shots-grid-5 .shot{
+  position:relative;overflow:hidden;
+  border:1px solid var(--line-strong);cursor:zoom-in;
+  aspect-ratio:4 / 3;margin:0;
+}
+.shots-grid-5 .shot img{width:100%;height:100%;object-fit:cover;display:block}
+.shots-grid-5 .shot:nth-child(5){
+  grid-column:1 / -1;
+  aspect-ratio:16 / 9;
+}
+.shots-grid-5 figcaption{
+  position:absolute;top:10px;left:10px;
+  background:var(--ink);color:var(--paper);
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  padding:6px 10px;z-index:2;
+}
+
+/* Компактная версия блока drawings для проекта 07 (без верхнего бордера) */
+.drawings--compact{
+  margin-top:clamp(20px, 3vh, 32px);
+  padding-top:clamp(20px, 3vh, 32px);
+  border-top:1px dashed var(--line);
+}
+.drawings--compact:first-of-type{border-top:none;padding-top:0}
+
+/* Адаптив */
+@media(max-width:900px){
+  .shots-grid-8{grid-template-columns:repeat(3, 1fr)}
+}
+@media(max-width:768px){
+  .shots-grid-4{grid-template-columns:1fr}
+  .shots-grid-4 .shot{aspect-ratio:16 / 9}
+  .shots-grid-8{grid-template-columns:1fr 1fr}
+  .shots-grid-5{grid-template-columns:1fr}
+  .shots-grid-5 .shot{aspect-ratio:16 / 9}
+  .shots-grid-5 .shot:nth-child(5){aspect-ratio:16 / 9}
+}
 
 
 
