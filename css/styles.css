@@ -168,7 +168,8 @@ body.loaded .h-reveal{opacity:1;transform:none}
 /* БЛОК 11: КАРКАС СЕКЦИЙ */
 .section{padding:clamp(84px,12vh,150px) var(--pad-x);position:relative}
 .section--pad-top{padding-top:clamp(60px,8vh,100px)}
-.section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
+.section-head{ position: relative; margin-top: 200px;
+  display:flex;align-items:flex-end;justify-content:space-between;gap:20px;
   border-bottom:1px solid var(--line-strong);padding-bottom:18px;margin-bottom:clamp(40px,7vh,76px)}
 .section-label{font-family:var(--mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--accent);display:block;margin-bottom:12px}
 .section-title{font-family:var(--disp);font-weight:600;font-size:clamp(1.7rem,4.6vw,3.3rem);line-height:1.05;text-transform:uppercase}
